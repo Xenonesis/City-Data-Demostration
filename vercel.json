@@ -2,7 +2,11 @@
   "version": 2,
   "builds": [
     {
-      "src": "vite.config.js",
+      "src": "api/index.php",
+      "use": "@vercel/php"
+    },
+    {
+      "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
         "distDir": "public"
@@ -11,9 +15,28 @@
   ],
   "routes": [
     {
+      "src": "/build/(.*)",
+      "dest": "/public/build/$1"
+    },
+    {
+      "src": "/(css|js|images|favicon.ico|robots.txt)/(.*)",
+      "dest": "/public/$1/$2"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "/api/index.php"
     }
   ],
-  "outputDirectory": "public"
+  "env": {
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "LOG_CHANNEL": "stderr",
+    "SESSION_DRIVER": "array",
+    "CACHE_DRIVER": "array"
+  },
+  "functions": {
+    "api/index.php": {
+      "runtime": "@vercel/php@0.7.1"
+    }
+  }
 }
