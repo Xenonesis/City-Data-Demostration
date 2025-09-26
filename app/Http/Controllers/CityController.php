@@ -123,4 +123,31 @@ class CityController extends Controller
             'cities_by_state' => $citiesByState
         ];
     }
+
+    // API method for PWA functionality
+    public function apiSearch(Request $request)
+    {
+        try {
+            $search = $request->get('q', '');
+            $limit = $request->get('limit', 10);
+
+            $cities = DB::table('city_masters')
+                ->select('id', 'city', 'MSTR1 as state', 'MSTR3 as population')
+                ->where('city', 'like', '%' . $search . '%')
+                ->orWhere('MSTR1', 'like', '%' . $search . '%')
+                ->limit($limit)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $cities,
+                'count' => $cities->count()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

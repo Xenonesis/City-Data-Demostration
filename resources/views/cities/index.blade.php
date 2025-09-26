@@ -3,207 +3,321 @@
 @section('title', 'Cities')
 
 @section('content')
-<div class="container">
-    <h1 class="mb-4">All Cities Dashboard</h1>
-    
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Real Cities</h5>
-                    <h2>{{ number_format($stats['total_cities']) }}</h2>
-                    <small class="text-muted">From Database</small>
-                </div>
-            </div>
+<div class="relative overflow-hidden">
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-br from-teal-600 via-blue-600 to-indigo-700 py-16">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><pattern id=\"cities\" patternUnits=\"userSpaceOnUse\" width=\"30\" height=\"30\"><circle cx=\"15\" cy=\"15\" r=\"3\" fill=\"%23ffffff\" opacity=\"0.1\"/><circle cx=\"5\" cy=\"5\" r=\"1\" fill=\"%23ffffff\" opacity=\"0.1\"/><circle cx=\"25\" cy=\"25\" r=\"2\" fill=\"%23ffffff\" opacity=\"0.1\"/></pattern></defs><rect width=\"100\" height=\"100\" fill=\"url(%23cities)\"/></svg>');"></div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Total Population</h5>
-                    <h2>{{ number_format($stats['total_population']) }}</h2>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="animate-fade-in">
+                <div class="mb-6">
+                    <i class="fas fa-city text-5xl md:text-6xl text-white opacity-80 animate-bounce-gentle"></i>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Average Population</h5>
-                    <h2>{{ number_format($stats['average_population']) }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h5 class="card-title">States Covered</h5>
-                    <h2>{{ $states->count() }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Search and Filter Section -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">🔍 Search & Filter Cities</h5>
-        </div>
-        <div class="card-body">
-            <form method="GET" action="{{ url('/cities') }}" class="row g-3">
-                <div class="col-md-6">
-                    <label for="search" class="form-label">Search Cities</label>
-                    <input type="text" class="form-control" id="search" name="search" 
-                           value="{{ request('search') }}" 
-                           placeholder="Search by city name or state...">
-                </div>
-                <div class="col-md-4">
-                    <label for="state" class="form-label">Filter by State</label>
-                    <select class="form-select" id="state" name="state">
-                        <option value="">All States</option>
-                        @foreach($states as $state)
-                            <option value="{{ $state }}" {{ request('state') == $state ? 'selected' : '' }}>
-                                {{ $state }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Search</button>
-                </div>
-            </form>
-            @if(request('search') || request('state'))
-                <div class="mt-2">
-                    <a href="{{ url('/cities') }}" class="btn btn-outline-secondary btn-sm">Clear Filters</a>
-                </div>
-            @endif
-        </div>
-    </div>
-    
-    <!-- Data Visualization Charts - Only show with real data -->
-    @if($cities->count() > 0)
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">📊 Top 10 Real Cities by Population</h5>
-                </div>
-                <div class="card-body">
-                    @if($stats['top_cities']->count() > 0)
-                        <canvas id="topCitiesChart" style="height: 300px;"></canvas>
-                    @else
-                        <div class="text-center text-muted">
-                            <p>No population data available for charts</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">🗺️ Real Cities by State Distribution</h5>
-                </div>
-                <div class="card-body">
-                    @if($stats['cities_by_state']->count() > 0)
-                        <canvas id="stateDistributionChart" style="height: 300px;"></canvas>
-                    @else
-                        <div class="text-center text-muted">
-                            <p>No state distribution data available</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-    
-    <!-- Interactive Map - Only show with real data -->
-    @if($cities->count() > 0)
-    @php
-        $citiesWithCoords = $cities->filter(function($c){
-            return isset($c->latitude) && isset($c->longitude);
-        });
-    @endphp
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">🗺️ Interactive Map - Real City Locations</h5>
-        </div>
-        <div class="card-body">
-            @if($citiesWithCoords->count() > 0)
-                <div id="map" style="height: 400px; width: 100%;"></div>
-                <p class="text-muted mt-2">
-                    <small>Click on markers to see real city details. Only shows cities with verified coordinates.</small>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+                    Cities <span class="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">Dashboard</span>
+                </h1>
+                <p class="text-lg sm:text-xl text-white opacity-90 max-w-3xl mx-auto leading-relaxed">
+                    Explore comprehensive data from cities across India with powerful search and visualization tools
                 </p>
-            @else
-                <div class="alert alert-warning mb-0">
-                    No location data available. The map is hidden until latitude/longitude are present in the database.
-                </div>
-            @endif
+            </div>
         </div>
-    </div>
-    @endif
-    
-    @if($cities->count() > 0)
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Real Cities from Database ({{ $cities->count() }} cities found)</h5>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Real Cities</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ number_format($stats['total_cities']) }}</p>
+                        <p class="text-xs text-gray-500 mt-1">From Database</p>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>City Name</th>
-                                        <th>State</th>
-                                        @if(isset($cities->first()->district))
-                                            <th>District</th>
-                                        @endif
-                                        <th>Population</th>
-                                        <th>District</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($cities as $city)
-                                        <tr>
-                                            <td>{{ $city->id }}</td>
-                                            <td>
-                                                <strong>{{ $city->city }}</strong>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-primary">
-                                                    {{ $city->state ?? ($city->state_name ?? 'N/A') }}
-                                                </span>
-                                            </td>
-                                            <td>{{ $city->population_display ?? number_format($city->population_exact ?? 0) }}</td>
-                                            <td>{{ $city->district_name ?? 'N/A' }}</td>
-                                            <td>
-                                                <a href="/cities/{{ $city->id }}" class="btn btn-sm btn-outline-primary">
-                                                    View Details
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-city text-2xl text-white"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Total Population</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ number_format($stats['total_population']) }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Combined</p>
+                    </div>
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-users text-2xl text-white"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Average Population</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ number_format($stats['average_population']) }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Per City</p>
+                    </div>
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-chart-bar text-2xl text-white"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">States Covered</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $states->count() }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Across India</p>
+                    </div>
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-map text-2xl text-white"></i>
                     </div>
                 </div>
             </div>
         </div>
-    @else
-        <div class="alert alert-danger">
-            <h4>No Real Data Available</h4>
-            <p>Unable to retrieve city data from the database. Please check your database connection and ensure the city_masters table contains data.</p>
-            <small class="text-muted">This application only displays real data from your database - no fake or mock data will be shown.</small>
-        </div>
-    @endif
     
-    <div class="mt-4">
-        <a href="/" class="btn btn-secondary">← Back to Home</a>
+        <!-- Search and Filter Section -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-teal-400 to-blue-600 rounded-full transform translate-x-16 -translate-y-16 opacity-10"></div>
+            <div class="relative z-10">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-r from-teal-500 to-blue-600 rounded-xl flex items-center justify-center mr-4">
+                        <i class="fas fa-search text-white text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Search & Filter Cities</h2>
+                </div>
+                
+                <form method="GET" action="{{ url('/cities') }}" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        <div class="md:col-span-6">
+                            <label for="search" class="block text-sm font-semibold text-gray-700 mb-3">
+                                <i class="fas fa-city mr-2 text-teal-500"></i>Search Cities
+                            </label>
+                            <input type="text" 
+                                   class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 placeholder-gray-400" 
+                                   id="search" 
+                                   name="search" 
+                                   value="{{ request('search') }}" 
+                                   placeholder="Search by city name, state, or district...">
+                        </div>
+                        <div class="md:col-span-4">
+                            <label for="state" class="block text-sm font-semibold text-gray-700 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2 text-teal-500"></i>Filter by State
+                            </label>
+                            <select class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300" 
+                                    id="state" 
+                                    name="state">
+                                <option value="">All States</option>
+                                @foreach($states as $state)
+                                    <option value="{{ $state }}" {{ request('state') == $state ? 'selected' : '' }}>
+                                        {{ $state }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 flex items-end">
+                            <button type="submit" 
+                                    class="w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                <i class="fas fa-search mr-2"></i>
+                                <span class="hidden sm:inline">Search</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    @if(request('search') || request('state'))
+                        <div class="flex flex-wrap gap-3 items-center pt-4 border-t border-gray-200">
+                            <span class="text-sm font-medium text-gray-600">Active Filters:</span>
+                            @if(request('search'))
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-teal-100 text-teal-800">
+                                    <i class="fas fa-search mr-1"></i>
+                                    "{{ request('search') }}"
+                                </span>
+                            @endif
+                            @if(request('state'))
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                    {{ request('state') }}
+                                </span>
+                            @endif
+                            <a href="{{ url('/cities') }}" 
+                               class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200">
+                                <i class="fas fa-times mr-2"></i>
+                                Clear All
+                            </a>
+                        </div>
+                    @endif
+                </form>
+            </div>
+        </div>
+    
+        <!-- Data Visualization Charts - Only show with real data -->
+        @if($cities->count() > 0)
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full transform translate-x-12 -translate-y-12 opacity-10"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-3">
+                            <i class="fas fa-chart-bar text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">Top 10 Cities by Population</h3>
+                    </div>
+                    @if($stats['top_cities']->count() > 0)
+                        <div class="h-80">
+                            <canvas id="topCitiesChart" class="w-full h-full"></canvas>
+                        </div>
+                    @else
+                        <div class="text-center text-gray-500 py-12">
+                            <i class="fas fa-chart-bar text-4xl mb-4 opacity-50"></i>
+                            <p class="text-lg">No population data available for charts</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-400 to-teal-600 rounded-full transform translate-x-12 -translate-y-12 opacity-10"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center mr-3">
+                            <i class="fas fa-chart-pie text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">Cities by State Distribution</h3>
+                    </div>
+                    @if($stats['cities_by_state']->count() > 0)
+                        <div class="h-80">
+                            <canvas id="stateDistributionChart" class="w-full h-full"></canvas>
+                        </div>
+                    @else
+                        <div class="text-center text-gray-500 py-12">
+                            <i class="fas fa-chart-pie text-4xl mb-4 opacity-50"></i>
+                            <p class="text-lg">No state distribution data available</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endif
+    
+        <!-- Interactive Map - Only show with real data -->
+        @if($cities->count() > 0)
+        @php
+            $citiesWithCoords = $cities->filter(function($c){
+                return isset($c->latitude) && isset($c->longitude);
+            });
+        @endphp
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 border border-gray-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-400 to-blue-600 rounded-full transform translate-x-12 -translate-y-12 opacity-10"></div>
+            <div class="relative z-10">
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center mr-3">
+                        <i class="fas fa-map-marked-alt text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Interactive Map - City Locations</h3>
+                </div>
+                @if($citiesWithCoords->count() > 0)
+                    <div id="map" class="h-96 w-full rounded-xl overflow-hidden shadow-inner"></div>
+                    <p class="text-gray-600 text-sm mt-4 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-indigo-500"></i>
+                        Click on markers to see city details. Showing cities with verified coordinates.
+                    </p>
+                @else
+                    <div class="text-center text-gray-500 py-12">
+                        <i class="fas fa-map-marked-alt text-4xl mb-4 opacity-50"></i>
+                        <p class="text-lg">No location data available</p>
+                        <p class="text-sm">The map will appear when latitude/longitude data is present in the database.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+        @endif
+    
+        @if($cities->count() > 0)
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-database mr-3 text-indigo-500"></i>
+                            Cities Database
+                        </h3>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                            {{ $cities->count() }} cities found
+                        </span>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">City Name</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">State</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Population</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">District</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            @foreach($cities as $city)
+                                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $city->id }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
+                                                <i class="fas fa-city text-white text-xs"></i>
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-900">{{ $city->city }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {{ $city->state ?? ($city->state_name ?? 'N/A') }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ $city->population_display ?? number_format($city->population_exact ?? 0) }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $city->district_name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <a href="/cities/{{ $city->id }}" 
+                                           class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105">
+                                            <i class="fas fa-eye mr-2"></i>
+                                            View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @else
+            <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-lg">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-red-400 text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-red-800">No Real Data Available</h3>
+                        <p class="text-red-700 mt-2">Unable to retrieve city data from the database. Please check your database connection and ensure the city_masters table contains data.</p>
+                        <p class="text-red-600 text-sm mt-1">This application only displays real data from your database - no fake or mock data will be shown.</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+        
+        <div class="text-center pt-8">
+            <a href="/" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Home
+            </a>
+        </div>
     </div>
 </div>
 
